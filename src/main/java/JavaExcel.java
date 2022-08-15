@@ -32,6 +32,7 @@ public class JavaExcel {
             int value = (int) (inputWb.getSheetAt(0).getRow(7+i).getCell(4).getNumericCellValue());
             System.out.println(value);
         }
+        System.out.println();
         inputFile.close();
     }
 }
