@@ -1,3 +1,4 @@
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
@@ -10,7 +11,7 @@ import java.util.Scanner;
 public class ReportExcel {
     public static void main(String[] args) throws IOException {
 
-        final int BEGIN_NUMBERS = 7;
+        final int BEGIN_NUMBER = 7;
 
         Scanner scan = new Scanner(System.in);
         System.out.println("Введите общую наценку в процентах:");
@@ -25,14 +26,15 @@ public class ReportExcel {
         Workbook wb = new HSSFWorkbook(fis);
         Sheet sheet = wb.getSheetAt(0);
 
-        makingPrice(sheet, BEGIN_NUMBERS, k, kSpec);
+        makingPrice(sheet, BEGIN_NUMBER, k, kSpec);
 
         makingHeader(sheet);
 
 //        setCellStyle(wb, sheet);
 
-
-
+        System.out.println("Делаем креатек для Мишани? (y/n)");
+        if (scan.next().equals("y"))
+            CreatekReport(BEGIN_NUMBER, sheet);
 
         fis.close();
 
@@ -42,10 +44,10 @@ public class ReportExcel {
     }
 
 
-    public static void makingPrice(Sheet sheet, int beginNumbers, float k, float kSpec) {
+    public static void makingPrice(Sheet sheet, int beginNumber, float k, float kSpec) {
         int amountInputRows = sheet.getLastRowNum();
 
-        for (int i = beginNumbers; i< amountInputRows+1; i++) {
+        for (int i = beginNumber; i< amountInputRows+1; i++) {
 
             long sebes = Math.round(sheet.getRow(i).getCell(3).getNumericCellValue());
             long promo = Math.round(sheet.getRow(i).getCell(4).getNumericCellValue());
@@ -84,6 +86,19 @@ public class ReportExcel {
         sheet.getRow(6).getCell(6).setCellValue("");
         sheet.setColumnWidth(5,5_000);
 
+    }
+
+    public static void CreatekReport(int BEGIN_NUMBER, Sheet sheet) {
+        for (int i = BEGIN_NUMBER; i < sheet.getLastRowNum(); i++) {
+            Cell brend = sheet.getRow(i).getCell(0);
+            Cell artikul = sheet.getRow(i).getCell(2);
+            if (!(artikul.getStringCellValue().contains("CK8") && brend.getStringCellValue().contains("Createk")
+                    && artikul.getStringCellValue().length() < 7)) {
+                Row removingRow = sheet.getRow(i);
+                sheet.removeRow(removingRow);
+//                sheet.shiftRows(i+1, sheet.getLastRowNum(), -1);
+            }
+        }
     }
 
     public static void setCellStyle(Workbook wb, Sheet sheet) {
